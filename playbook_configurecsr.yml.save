@@ -1,0 +1,33 @@
+---
+- name: Configuration des interfaces csr1000
+  hosts: csr1000
+  gather_facts: falsecisco
+  tasks:
+    - name: Configurer l'interface Gigabit1 pour DHCP
+      ios_config:
+        lines:
+          - interface GigabitEthernet1
+          - ip address dhcp
+          - no shutdown
+
+    - name: Configurer l'interface Gigabit2 avec l'adresse 192.168.2.1/24
+      ios_config:
+        lines:
+          - interface GigabitEthernet2
+          - ip address 192.168.2.1 255.255.255.0
+          - no shutdown
+
+    - name: Configurer l'interface Gigabit3 avec l'adresse 192.168.3.1/24
+      ios_config:
+        lines:
+          - interface GigabitEthernet3
+          - ip address 192.168.3.1 255.255.255.0
+          - no shutdown
+
+    - name: Configurer l'interface Gigabit4 avec l'adresse 192.168.4.1/24
+      ios_config:
+        lines:
+          - interface GigabitEthernet4
+          - ip address 192.168.4.1 255.255.255.0
+          - no shutdown
+

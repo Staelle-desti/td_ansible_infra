@@ -1,0 +1,39 @@
+---
+- name: Configuration et récupération de la configuration CSR1000
+  hosts: csr1000
+  gather_facts: false
+
+  tasks:
+    - name: Configurer l'interface Gigabit1 pour DHCP
+      cisc
+
+    - name: Configurer l'interface Gigabit2 avec l'adresse 192.168.2.1/24
+      cisco.ios.ios_config:
+        lines:
+          - interface GigabitEthernet2
+          - ip address 192.168.2.1 255.255.255.0
+          - no shutdown
+
+    - name: Configurer l'interface Gigabit3 avec l'adresse 192.168.3.1/24
+      cisco.ios.ios_config:
+        lines:
+          - interface GigabitEthernet3
+          - ip address 192.168.3.1 255.255.255.0
+          - no shutdown
+
+    - name: Configurer l'interface Gigabit4 avec l'adresse 192.168.4.1/24
+      cisco.ios.ios_config:
+        lines:
+          - interface GigabitEthernet4
+          - ip address 192.168.4.1 255.255.255.0
+          - no shutdown
+
+    - name: Récupérer la configuration actuelle
+      cisco.ios.ios_command:
+        commands: show running-config
+      register: config
+
+    - name: Enregistrer la configuration récupérée
+      copy:
+        content: "{{ config.stdout[0] }}"
+        dest: "show_run_csr1000.txt"
