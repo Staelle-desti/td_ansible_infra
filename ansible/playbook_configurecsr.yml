@@ -3,36 +3,50 @@
   hosts: csr1000
   # Passe l'étape permettant de récupérer des informations sur
   #   l'hôte pour gagner du temps
-  gather_facts: false
+  gather_facts: no
 
   # Liste des tâches associées à notre Acte
   tasks:
-    - name: Récupère la configuration
+    - name:  configuration des interfaces L3
       # On indique le nom du module
-      cisco.ios.ios_command:
-        name: GigabitEthernet1
-        ipv4:
-          - address: dhcp
-            state: present
-      register: result
+      cisco.ios.ios_l3_interfaces:
+        config:
+          - name: GigabitEthernet1
+            ipv4:
+              - address: 
+                secondary: true
 
-    - name: Configurer l'interface GigabitEthernet2 avec IP 192.168.2.1/24
-      cisco.ios.ios_l3_interface:
-        name: GigabitEthernet2
-        ipv4:
-          - address: 192.168.2.1/24
-        state: present
+          - name: GigabitEthernet2        
+            ipv4:
+              - address: 192.168.2.1/24
 
-    - name: Configurer l'interface GigabitEthernet3 avec IP 192.168.3.1/24
-      cisco.ios.ios_l3_interface:
-        name: GigabitEthernet3
-        ipv4:
-          - address: 192.168.3.1/24
-        state: present
+          - name: GigabitEthernet3       
+            ipv4:
+              - address: 192.168.3.1/24
 
-    - name: Configurer l'interface GigabitEthernet4 avec IP 192.168.4.1/24
-      cisco.ios.ios_l3_interface:
-        name: GigabitEthernet4
-        ipv4:
-          - address: 192.168.4.1/24
-        state: present
+          - name: GigabitEthernet4        
+            ipv4:
+              - address: 192.168.4.1/24
+        state : merged 
+
+       # On active les interfaces
+
+    - name : Activer les interfaces
+      ios_config:
+        lines:
+          - no shutdown
+        parents: interface GigabitEthernet1
+        parents: interface GigabitEthernet2
+        parents: interface GigabitEthernet3
+        parents: interface GigabitEthernet4
+        
+       # On configure du DHCP
+    - name : pool DHCP
+      cisco.ios.ios_config:
+        lines:
+          - no ip DHCP pool dhcppool
+
+          
+
+                
+      
